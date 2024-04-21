@@ -66,10 +66,13 @@ class SnapmakerSettingsPlugin(Extension):
         plugin_machine_dir = os.path.join(machine_settings_dir, "definitions")
         plugin_extruder_dir = os.path.join(machine_settings_dir, "extruders")
         plugin_quality_dir = os.path.join(machine_settings_dir, "quality")
+        plugin_meshes_dir = os.path.join(machine_settings_dir, "meshes")
 
         definition_dir = Resources.getStoragePath(Resources.DefinitionContainers)
         extruder_dir = Resources.getStoragePath(CuraApplication.ResourceTypes.ExtruderStack)
         quality_dir = Resources.getStoragePath(CuraApplication.ResourceTypes.QualityInstanceContainer)
+        # For some reason meshes does not have a __types_storage, so we use the resources parent directory
+        meshes_dir = os.path.join(os.path.dirname(definition_dir), "meshes")
 
         # copy machine definitions
         if os.path.exists(plugin_machine_dir):
@@ -91,6 +94,16 @@ class SnapmakerSettingsPlugin(Extension):
                 file_path = os.path.join(plugin_quality_dir, filename)
                 if os.path.isdir(file_path):  # machine quality folder
                     shutil.copytree(file_path, os.path.join(quality_dir, filename), dirs_exist_ok=True)
+
+        # copy meshes
+        if os.path.exists(plugin_meshes_dir):
+            # create meshes directory if not exist as we're not using the getStoragePath method
+            if not os.path.exists(meshes_dir):
+                os.makedirs(meshes_dir)
+            for filename in os.listdir(plugin_meshes_dir):
+                if filename.endswith(".stl"):
+                    file_path = os.path.join(plugin_meshes_dir, filename)
+                    shutil.copy2(file_path, meshes_dir)
 
     def __updateMaterials(self) -> None:
         plugin_material_dir = os.path.join(self._plugin_path, "resources", "materials")

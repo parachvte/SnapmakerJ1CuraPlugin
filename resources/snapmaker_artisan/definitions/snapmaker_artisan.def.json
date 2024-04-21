@@ -16,7 +16,8 @@
         "preferred_quality_type": "normal",
         "preferred_material": "generic_pla",
         "exclude_materials": [],
-        "visible": true
+        "visible": true,
+        "platform": "snapmaker-artisan-bed.stl"
     },
     "overrides": {
         "machine_name": {
